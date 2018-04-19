@@ -1,5 +1,8 @@
-const express = require('express');
+import * as express from 'express';
+
 const app = express();
+
+declare var process; 
 
 app.get('/', (req, res) => {
     res.status(200).send({ hi: 'there-ts' });

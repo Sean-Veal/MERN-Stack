@@ -8,12 +8,16 @@
     "npm": "5.0.4"
   },
   "scripts": {
-    "start": "ts-node index.ts",
+    "build": "tsc",
+    "dev": "ts-node ./lib/index.ts",
+    "start": "node ./dist/index.js",
+    "prod": "npm run build && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Sean Veal",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "typescript": "^2.8.1"
   }
 }
