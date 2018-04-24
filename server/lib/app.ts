@@ -1,7 +1,8 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import { Request, Response } from "express";
-
+import * as passport from 'passport';
+import * as GoogleStrategy from 'passport-google-oauth20';
 class App {
 
   constructor() {
@@ -15,16 +16,12 @@ class App {
   private config(): void {
       this.app.use(bodyParser.json());
       this.app.use(bodyParser.urlencoded({ extended: false }));
+      passport.use(new GoogleStrategy.Strategy());
+
   }
 
   private routes(): void {
     const router = express.Router();
-
-    router.get('/', (req: Request, res: Response) => {
-        res.status(200).send({
-            message: 'Hey dude!'
-        });
-    });
 
     this.app.use('/', router);
   }
