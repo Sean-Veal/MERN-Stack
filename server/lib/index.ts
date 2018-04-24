@@ -1,6 +1,5 @@
 import * as express from 'express';
-
-const app = express();
+import app from './app';
 
 declare var process; 
 
