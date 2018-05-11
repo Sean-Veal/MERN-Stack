@@ -3,4 +3,4 @@ server/dist/
 npm-debug.log
 .DS_Store
 /*.env
-server/lib/config/keys.ts
+server/lib/config/dev.ts

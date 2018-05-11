@@ -59,10 +59,16 @@
                 //Facebook OAuth Flow
                 passport.use(new this.FacebookStrategy(facebookConfig,
                 (accessToken, refreshToken, profile, done) => {
-                    console.log('accessToken', accessToken);
-                    console.log('refreshToken', refreshToken);
-                    console.log('profile', profile);
-                    console.log('done', done);
+                    User.findOne({ facebookId: profile.id })
+                    .then((existingUser) => {
+                        if(existingUser) {
+                            done(null, existingUser);
+                        } else {
+                            let user = new User({facebookId: profile.id});
+                            user.save()
+                            .then((user) => done(null, user));
+                        }
+                    })
                 }));
         }
 
@@ -72,7 +78,7 @@
                 }));
 
                 router.get('/auth/facebook', passport.authenticate('facebook', {
-
+                    
                 }));
                         
                 router.get('/auth/google/callback', passport.authenticate('google'));
@@ -81,6 +87,11 @@
                 router.get('/api/current_user', (req: Request, res: Response) => {
                     res.status(200).send(req.user);
                 });
+
+                router.get('/api/logout', (req: Request, res: Response) => {
+                    req.logout();
+                    res.status(200).send(req.user);
+                })
             }
     }
 
