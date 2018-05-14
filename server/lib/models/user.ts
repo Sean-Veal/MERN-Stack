@@ -1,5 +1,8 @@
 import { Document, Schema, Model, model } from 'mongoose';
-import {IUser} from '../interfaces/User';
+
+export interface IUser {
+    googleId?: string;
+}
 
 export interface IUserDocument extends IUser, Document {
 
