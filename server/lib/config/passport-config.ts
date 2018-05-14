@@ -3,7 +3,6 @@
     import * as passportFacebook from 'passport-facebook';
     import getKeys from './keys';
     import {User} from '../models/user';
-    import {IUser} from '../interfaces/User';
     import {Request, Response} from 'express';
 
     class PassportConfig {
@@ -13,18 +12,19 @@
         private FacebookStrategy = passportFacebook.Strategy;
         private keys = getKeys();
 
+        private googleConfig: Object = {
+            clientID: this.keys.googleClientID,
+            clientSecret: this.keys.googleClientSecret,
+            callbackURL: '/auth/google/callback'
+        };
+        private facebookConfig: Object = {
+            clientID: this.keys.facebookAppId,
+            clientSecret: this.keys.facebookAppSecret,
+            callbackURL: '/auth/facebook/callback',
+            profileFields: ["name", "email", "link", "locale", "timezone"]
+        };
+
         startPassportProcess() {
-            const googleConfig: Object = {
-                clientID: this.keys.googleClientID,
-                clientSecret: this.keys.googleClientSecret,
-                callbackURL: '/auth/google/callback'
-            };
-            const facebookConfig: Object = {
-                clientID: this.keys.facebookAppId,
-                clientSecret: this.keys.facebookAppSecret,
-                callbackURL: '/auth/facebook/callback',
-                profileFields: ["name", "email", "link", "locale", "timezone"]
-            };
             // This user is what's being pulled from the DB 
             // That we just put in below
             //Incoming Request with cookie
@@ -43,7 +43,7 @@
             });
 
             //Google OAuth Flow
-            passport.use(new this.GoogleStrategy(googleConfig, 
+            passport.use(new this.GoogleStrategy(this.googleConfig, 
                 (accessToken, refreshToken, profile, done) => {
                     User.findOne({ googleId: profile.id })
                     .then((existingUser) => {
@@ -58,7 +58,8 @@
                 }));
 
                 //Facebook OAuth Flow
-                passport.use(new this.FacebookStrategy(facebookConfig,
+                if(this.keys.facebookAppId) {
+                passport.use(new this.FacebookStrategy(this.facebookConfig,
                 (accessToken, refreshToken, profile, done) => {
                     User.findOne({ facebookId: profile.id })
                     .then((existingUser) => {
@@ -72,6 +73,7 @@
                     })
                 }));
         }
+    }
 
             public getAuthRoutes(router) {
                 router.get('/auth/google', passport.authenticate('google', {
