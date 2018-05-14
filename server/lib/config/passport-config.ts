@@ -1,7 +1,7 @@
     import * as passport from 'passport';
     import * as passportGoogle from 'passport-google-oauth20';
     import * as passportFacebook from 'passport-facebook';
-    import * as keys from './keys';
+    import getKeys from './keys';
     import {User} from '../models/user';
     import {IUser} from '../interfaces/User';
     import {Request, Response} from 'express';
@@ -11,16 +11,17 @@
 
         private GoogleStrategy = passportGoogle.Strategy;
         private FacebookStrategy = passportFacebook.Strategy;
+        private keys = getKeys();
 
         startPassportProcess() {
             const googleConfig: Object = {
-                clientID: keys.googleClientID,
-                clientSecret: keys.googleClientSecret,
+                clientID: this.keys.googleClientID,
+                clientSecret: this.keys.googleClientSecret,
                 callbackURL: '/auth/google/callback'
             };
             const facebookConfig: Object = {
-                clientID: keys.facebookAppId,
-                clientSecret: keys.facebookAppSecret,
+                clientID: this.keys.facebookAppId,
+                clientSecret: this.keys.facebookAppSecret,
                 callbackURL: '/auth/facebook/callback',
                 profileFields: ["name", "email", "link", "locale", "timezone"]
             };
