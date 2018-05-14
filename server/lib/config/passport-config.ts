@@ -1,7 +1,7 @@
     import * as passport from 'passport';
     import * as passportGoogle from 'passport-google-oauth20';
     import * as passportFacebook from 'passport-facebook';
-    import getKeys from './keys';
+    import * as keys from './prod';
     import {User} from '../models/user';
     import {Request, Response} from 'express';
 
@@ -10,16 +10,15 @@
 
         private GoogleStrategy = passportGoogle.Strategy;
         private FacebookStrategy = passportFacebook.Strategy;
-        private keys = getKeys();
 
         private googleConfig: Object = {
-            clientID: this.keys.googleClientID,
-            clientSecret: this.keys.googleClientSecret,
+            clientID: keys.googleClientID,
+            clientSecret: keys.googleClientSecret,
             callbackURL: '/auth/google/callback'
         };
         private facebookConfig: Object = {
-            clientID: this.keys.facebookAppId,
-            clientSecret: this.keys.facebookAppSecret,
+            clientID: keys.facebookAppId,
+            clientSecret: keys.facebookAppSecret,
             callbackURL: '/auth/facebook/callback',
             profileFields: ["name", "email", "link", "locale", "timezone"]
         };
@@ -58,7 +57,7 @@
                 }));
 
                 //Facebook OAuth Flow
-                if(this.keys.facebookAppId) {
+                if(keys.facebookAppId) {
                 passport.use(new this.FacebookStrategy(this.facebookConfig,
                 (accessToken, refreshToken, profile, done) => {
                     User.findOne({ facebookId: profile.id })
