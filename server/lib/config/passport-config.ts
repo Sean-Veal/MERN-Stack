@@ -21,7 +21,8 @@
             clientID: keys.facebookAppId,
             clientSecret: keys.facebookAppSecret,
             callbackURL: '/auth/facebook/callback',
-            profileFields: ["name", "email", "link", "locale", "timezone"]
+            profileFields: ["name", "email", "link", "locale", "timezone"],
+            proxy: true
         };
 
         startPassportProcess() {
