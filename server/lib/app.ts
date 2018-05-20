@@ -5,7 +5,7 @@ import PassportConfig from './config/passport-config';
 import * as cookieSession from 'cookie-session';
 import * as passport from 'passport';
 import * as mongoose from 'mongoose';
-import * as keys from './config/prod';
+import * as keys from './config/dev';
 
 class App {
 
@@ -16,6 +16,7 @@ class App {
   }
 
   public app: express.Application;
+  private passportConfig: PassportConfig = new PassportConfig(keys);
 
   private config(): void {
       mongoose.connect(keys.mongoURI);
@@ -27,13 +28,13 @@ class App {
       }));
       this.app.use(passport.initialize());
       this.app.use(passport.session());
-      PassportConfig.startPassportProcess();
+      this.passportConfig.startPassportProcess();
   }
 
   private routes(): void {
     const router = express.Router();
     //Google Authentication routes
-    PassportConfig.getAuthRoutes(router);
+    this.passportConfig.getAuthRoutes(router);
     this.app.use('/', router);
   }
 

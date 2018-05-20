@@ -9,8 +9,10 @@
   },
   "scripts": {
     "build": "tsc --project server",
-    "dev": "ts-node server/lib/index.ts",
-    "dev:watch": "nodemon --config ./server/nodemon.json",
+    "server": "ts-node server/lib/index.ts",
+    "server:watch": "nodemon --config ./server/nodemon.json",
+    "dev": "concurrently \"npm run server:watch\" \"npm run client\"",
+    "client": "npm run start --prefix ./server/client",
     "start": "node server/dist/index.js",
     "prod": "npm run build && npm start",
     "postinstall": "npm run build",
@@ -19,6 +21,8 @@
   "author": "Sean Veal",
   "license": "ISC",
   "dependencies": {
+    "@types/es6-shim": "^0.31.37",
+    "concurrently": "^3.5.1",
     "cookie-session": "^2.0.0-beta.3",
     "express": "^4.16.3",
     "mongoose": "^5.0.17",
