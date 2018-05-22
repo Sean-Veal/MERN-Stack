@@ -81,7 +81,13 @@
                         
                     }));
                             
-                    router.get('/auth/google/callback', passport.authenticate('google'));
+                    router.get(
+                        '/auth/google/callback', 
+                        passport.authenticate('google'),
+                        (req: Request, res: Response) => {
+                            res.redirect('/surveys');
+                        }
+                    );
                     router.get('/auth/facebook/callback', passport.authenticate('facebook'));
 
                     router.get('/api/current_user', (req: Request, res: Response) => {
@@ -90,7 +96,7 @@
 
                     router.get('/api/logout', (req: Request, res: Response) => {
                         req.logout();
-                        res.status(200).send(req.user);
+                        res.redirect('/');
                     })
                 }
         }
