@@ -5,7 +5,9 @@ import PassportConfig from './config/passport-config';
 import * as cookieSession from 'cookie-session';
 import * as passport from 'passport';
 import * as mongoose from 'mongoose';
+import * as stripe from 'stripe';
 import * as keys from './config/dev';
+import requireLogin from './middlewares/requireLogin';
 
 class App {
 
@@ -33,8 +35,22 @@ class App {
 
   private routes(): void {
     const router = express.Router();
+    const stripeObj = stripe(keys.stripeSecretKey);
     //Google Authentication routes
     this.passportConfig.getAuthRoutes(router);
+    router.post('/api/stripe', requireLogin, async (req: Request, res: Response) => {
+          try{
+          const chargeObj = await stripeObj.charges.create({
+            amount: 500,
+            currency: 'usd',
+            description: '$5 for 5 credits',
+            source: req.body.id
+          });
+          req.user.credits += 5;
+          const user = await req.user.save();
+          res.status(200).send(user);
+        } catch(error) {res.status(401).send(error)} 
+    });
     this.app.use('/', router);
   }
 
